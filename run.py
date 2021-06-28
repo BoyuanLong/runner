@@ -1,5 +1,6 @@
 import importlib
 import sys, os
+sys.path.append('..')
 import argparse
 
 from slurm.run_slurm import add_slurm_args
