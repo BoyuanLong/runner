@@ -1,6 +1,8 @@
 import argparse
-import os
+import os, sys
+sys.path.append('..')
 import subprocess
+from logger import log
 
 
 class Slurm():
@@ -115,7 +117,7 @@ class Slurm():
         result = subprocess.run(cmd, shell=True, check=True)
         return result.returncode
 
-    def sbatch(self, run_cmd: str, convert: bool = True, verbose: bool = True,
+    def sbatch(self, run_cmd: str, name: str = 'sbatch_default', convert: bool = True, verbose: bool = True,
                sbatch_cmd: str = 'sbatch', shell: str = '/bin/sh') -> int:
         '''Run the sbatch command with all the (previously) set arguments and
         the provided command to in 'run_cmd'.
@@ -137,6 +139,7 @@ class Slurm():
         cmd = '\n'.join((
             sbatch_cmd + ' << EOF',
             self.arguments(shell),
+            f'#SBATCH --job-name {name}',
             run_cmd.replace('$', '\\$') if convert else run_cmd,
             'EOF',
         ))
@@ -147,6 +150,7 @@ class Slurm():
         if verbose:
             print(stdout)
         job_id = int(stdout.split(' ')[3])
+        log.info('Output: %s, err: %s, exit code: %r', stdout, result.stderr, result.returncode)
         return job_id
 
 

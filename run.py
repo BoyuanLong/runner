@@ -2,7 +2,7 @@ import importlib
 import sys, os
 import argparse
 
-from run_slurm import add_slurm_args
+from slurm.run_slurm import add_slurm_args
 from logger import log, init_file_logger
 
 class ExperimentStatus:
@@ -51,7 +51,7 @@ def main():
         from run_processes import run
         run(run_description, args)
     elif args.runner == 'slurm':
-        from run_slurm import run_slurm
+        from slurm.run_slurm import run_slurm
         run_slurm(run_description, args)
     elif args.runner == 'cpu':
         from run_cpu import run
