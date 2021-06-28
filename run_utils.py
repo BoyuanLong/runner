@@ -1,3 +1,5 @@
+import os
+
 def fmt_key(key: str) -> str:
     '''Maintain correct formatting for keys in key-value pairs'''
     key = str(key).strip()
@@ -9,3 +11,9 @@ def fmt_key(key: str) -> str:
 def fmt_value(value: str) -> str:
     '''Maintain correct formatting for values in key-value pairs'''
     return str(value).strip()
+
+
+def ensure_dir_exists(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path
