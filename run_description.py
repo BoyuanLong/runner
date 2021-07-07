@@ -108,7 +108,8 @@ class Experiment:
             if len(self.params) > 0:
                 params = self.params[experiment_idx]
                 for param, value in params.items():
-                    param_str = f'{fmt_key(param)}={fmt_value(value)}'
+                    connector = '=' if param.strip().startswith('hydra_') else ' '
+                    param_str = f'{fmt_key(param)}{connector}{fmt_value(value)}'
                     cmd_tokens.append(param_str)
 
                     abbr = None
