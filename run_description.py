@@ -108,7 +108,7 @@ class Experiment:
             if len(self.params) > 0:
                 params = self.params[experiment_idx]
                 for param, value in params.items():
-                    param_str = f'{fmt_key(param)} {fmt_value(value)}'
+                    param_str = f'{fmt_key(param)}={fmt_value(value)}'
                     cmd_tokens.append(param_str)
 
                     abbr = None
