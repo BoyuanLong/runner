@@ -2,7 +2,7 @@ import argparse
 import os, sys
 sys.path.append('..')
 import subprocess
-from logger import log
+from runner.logger import log
 
 
 class Slurm():

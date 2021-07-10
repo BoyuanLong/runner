@@ -2,7 +2,7 @@
 from runner.run_description import RunDescription, Experiment, ParamGrid
 
 _params = ParamGrid([
-    ('l', ['runs', 'slurm']),
+    ('l', ['Desktop', 'slurm']),
 ])
 
 _experiments = [

@@ -1,10 +1,9 @@
 import importlib
 import sys, os
-sys.path.append(os.path.join(sys.path[0], '..'))
 import argparse
 
-from slurm.run_slurm import add_slurm_args
-from logger import log, init_file_logger
+from runner.slurm.run_slurm import add_slurm_args
+from runner.logger import log, init_file_logger
 
 class ExperimentStatus:
     SUCCESS, FAILURE, INTERRUPTED = range(3)
@@ -49,13 +48,13 @@ def main():
     run_description.experiment_suffix = args.experiment_suffix
 
     if args.runner == 'processes':
-        from run_processes import run
+        from runner.run_processes import run
         run(run_description, args)
     elif args.runner == 'slurm':
-        from slurm.run_slurm import run_slurm
+        from runner.slurm.run_slurm import run_slurm
         run_slurm(run_description, args)
     elif args.runner == 'cpu':
-        from run_cpu import run
+        from runner.run_cpu import run
         run(run_description, args)
 
     return ExperimentStatus.SUCCESS

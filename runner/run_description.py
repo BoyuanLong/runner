@@ -6,7 +6,7 @@ import numpy as np
 from collections import OrderedDict
 import copy
 
-from run_utils import fmt_key, fmt_value, ensure_dir_exists
+from runner.run_utils import fmt_key, fmt_value, ensure_dir_exists
 
 class ParamGenerator:
     def __init__(self):

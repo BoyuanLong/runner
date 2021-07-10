@@ -9,11 +9,11 @@ from collections import defaultdict
 import os
 import time
 from os.path import join
-from run_utils import ensure_dir_exists
+from runner.run_utils import ensure_dir_exists
 from itertools import chain
 
-from logger import log, str2bool
-from slurm.core import Slurm
+from runner.logger import log, str2bool
+from runner.slurm.core import Slurm
 
 
 def add_slurm_args(parser):
