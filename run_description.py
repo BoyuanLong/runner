@@ -4,13 +4,9 @@ from os.path import join
 import numpy as np
 
 from collections import OrderedDict
+import copy
 
-from run_utils import fmt_key, fmt_value
-
-def ensure_dir_exists(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
-    return path
+from run_utils import fmt_key, fmt_value, ensure_dir_exists
 
 class ParamGenerator:
     def __init__(self):
@@ -37,6 +33,34 @@ class ParamList(ParamGenerator):
         for combination in combinations:
             yield combination
 
+class ParamSeq(ParamGenerator):
+    """The most simple kind of generator, represents just the list of parameter combinations."""
+
+    def __init__(self, combinations):
+        super(ParamSeq, self).__init__()
+        self.seq = OrderedDict(combinations)
+        lens = [len(v) for k,v in self.seq.items()]
+        assert all(x == lens[0] for x in lens)
+        self.len = lens[0]
+
+    def _generate_combinations(self):
+        for i in range(self.len):
+            yield [v[i] for k, v in self.seq.items()]
+
+    def generate_params(self, randomize=False):
+        if len(self.seq) == 0:
+            return dict()
+
+        all_combinations = list(self._generate_combinations())
+
+        if randomize:
+            all_combinations = np.random.permutation(all_combinations)
+        else:
+            all_combinations = all_combinations
+
+        for combination in all_combinations:
+            combination_dict = {param_name: combination[i] for (i, param_name) in enumerate(self.seq.keys())}
+            yield combination_dict
 
 class ParamGrid(ParamGenerator):
     """Parameter generator for grid search."""
@@ -81,6 +105,38 @@ class ParamGrid(ParamGenerator):
         for combination in all_combinations:
             combination_dict = {param_name: combination[i] for (i, param_name) in enumerate(param_names)}
             yield combination_dict
+
+class ParamMix(ParamGenerator):
+    def __init__(self, gen_list: list):
+        """Uses OrderedDict, so must be initialized with the list of tuples if you want to preserve order."""
+        super(ParamMix, self).__init__()
+        self.gens = gen_list
+    
+    def _generate_combinations(self, dicts, dict_idx):
+        if dict_idx == len(dicts) - 1:
+            return dicts[dict_idx]
+        
+        subcombinations = self._generate_combinations(dicts, dict_idx + 1)
+
+        results = []
+        for d in dicts[dict_idx]:
+            for subcombination in subcombinations:
+                result = copy.deepcopy(d)
+                result.update(subcombination)
+                results.append(result)
+        
+        return results
+
+    
+    def generate_params(self, randomize=False):
+        dicts = [list(g.generate_params(randomize)) for g in self.gens]
+        results = self._generate_combinations(dicts, 0)
+
+        if randomize:
+            results = np.random.permutation(results)
+
+        for r in results:
+            yield r
 
 
 class Experiment:
@@ -149,3 +205,4 @@ class RunDescription:
             for experiment_cmd, experiment_name in experiment_cmds:
                 # experiment_cmd += f' --train_dir={self.train_dir} --experiments_root={root_dir}'
                 yield experiment_cmd, experiment_name, root_dir, experiment.env_vars
+
