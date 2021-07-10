@@ -48,13 +48,13 @@ def main():
     run_description.experiment_suffix = args.experiment_suffix
 
     if args.runner == 'processes':
-        from runner.run_processes import run
+        from runner.processes.run_processes import run
         run(run_description, args)
     elif args.runner == 'slurm':
         from runner.slurm.run_slurm import run_slurm
         run_slurm(run_description, args)
     elif args.runner == 'cpu':
-        from runner.run_cpu import run
+        from runner.processes.run_cpu import run
         run(run_description, args)
 
     return ExperimentStatus.SUCCESS
