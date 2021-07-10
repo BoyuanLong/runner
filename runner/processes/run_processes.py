@@ -6,11 +6,13 @@ import sys
 import time
 from os.path import join
 from runner.logger import log
+from runner.run_utils import ensure_dir_exists
 
-def ensure_dir_exists(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
-    return path
+def add_gpu_args(parser):
+    parser.add_argument('--gpus', default=None, type=str, help='GPUs')
+    parser.add_argument('--experiments_per_gpu', default=1, type=int, help='How many experiments can we squeeze on a single GPU (-1 for not altering CUDA_VISIBLE_DEVICES at all)')
+    parser.add_argument('--max_parallel', default=8, type=int, help='Maximum simultaneous experiments')
+    return parser
 
 
 def run(run_description, args):

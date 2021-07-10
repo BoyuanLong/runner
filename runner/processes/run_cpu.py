@@ -15,10 +15,8 @@ def ensure_dir_exists(path):
 
 def run(run_description, args):
     experiments = run_description.experiments
-    max_parallel = args.max_parallel
 
     log.info('Starting processes with base cmds: %r', [e.cmd for e in experiments])
-    log.info('Max parallel processes is %d', max_parallel)
     log.info('Monitor log files using\n\n\ttail -f loggings/%s/**/**/log.txt\n\n', run_description.run_name)
 
     processes = []
